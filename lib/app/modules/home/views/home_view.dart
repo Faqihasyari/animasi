@@ -1,8 +1,11 @@
 import 'dart:math';
 
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:get_animasi/app/modules/profile/views/profile_view.dart';
+import 'package:lottie/lottie.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -11,23 +14,41 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    DecorationTween mydec = DecorationTween(
-        begin: BoxDecoration(
-            borderRadius: BorderRadius.circular(100), color: Colors.blue),
-        end: BoxDecoration(
-            borderRadius: BorderRadius.circular(50), color: Colors.amber));
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: DecoratedBoxTransition(
-          decoration: mydec.animate(controller.animationC),
+        child: ClipPath(
+          clipper: MyCustomClipper(),
           child: Container(
             width: 300,
             height: 300,
+            color: Colors.pink,
+            child: FlutterLogo(
+              size: 200,
+            ),
           ),
         ),
       ),
     );
+  }
+}
+
+class MyCustomClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path()
+      ..lineTo(0, size.height)
+      ..lineTo(size.width, size.height)
+      ..lineTo(size.width * 0.5, size.height * 0.5)
+      ..lineTo(size.width * 0.5, 0)
+      ..close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
   }
 }
 
@@ -204,3 +225,79 @@ class HomeView extends GetView<HomeController> {
 //         ));
 //   }
 // }
+
+//decorated box transition
+// class HomeView extends GetView<HomeController> {
+//   const HomeView({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     DecorationTween mydec = DecorationTween(
+//         begin: BoxDecoration(
+//             borderRadius: BorderRadius.circular(100), color: Colors.blue),
+//         end: BoxDecoration(
+//             borderRadius: BorderRadius.circular(50), color: Colors.amber));
+//     return Scaffold(
+//       appBar: AppBar(),
+//       body: Center(
+//         child: DecoratedBoxTransition(
+//           decoration: mydec.animate(controller.animationC),
+//           child: Container(
+//             width: 300,
+//             height: 300,
+//           ),
+//         ),
+        
+//       ),
+//     );
+//   }
+// }
+
+//fade transition
+// Center(
+//         child: FadeTransition(
+//           opacity: CurvedAnimation(
+//               parent: controller.animationC, curve: Curves.easeIn),
+//           child: Container(
+//             width: 300,
+//             height: 300,
+//             color: Colors.black,
+//           ),
+//         ),
+
+//avatar glow
+// Center(
+//         child: AvatarGlow(
+//           curve: Curves.bounceIn,
+//           glowColor: Colors.pink,
+//           child: ClipOval(
+//             child: Container(
+//               width: 70,
+//               height: 70,
+//               color: Colors.black,
+//               child: Image.network(
+//                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1zwhySGCEBxRRFYIcQgvOLOpRGqrT3d7Qng&s',
+//                 fit: BoxFit.cover,
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+
+//Hero
+// Center(
+//           child: GestureDetector(
+//         onTap: () => Get.to(ProfileView()),
+//         child: Hero(
+//           tag: 'tag1',
+//           child: ClipOval(
+//             child: SizedBox(
+//                 width: 200,
+//                 height: 200,
+//                 child: Image.network(
+//                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1zwhySGCEBxRRFYIcQgvOLOpRGqrT3d7Qng&s',
+//                   fit: BoxFit.cover,
+//                 )),
+//           ),
+//         ),
+//       )),
