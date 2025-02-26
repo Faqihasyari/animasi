@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -17,40 +19,54 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: ClipPath(
-          clipper: MyCustomClipper(),
-          child: Container(
-            width: 300,
-            height: 300,
-            color: Colors.pink,
-            child: FlutterLogo(
-              size: 200,
+          child: Column(
+        children: [
+          CarouselSlider(
+            options: CarouselOptions(
+              height: 400.0,
+              autoPlay: true,
+              autoPlayInterval: Duration(seconds: 2),
+              onPageChanged: (index, reason) =>
+                  controller.current.value = index,
+            ),
+            items: [1, 2, 3, 4, 5].map((i) {
+              return Container(
+                width: 300,
+                height: 300,
+                color: Colors.amber,
+                child: Center(child: Text('$i')),
+              );
+            }).toList(),
+          ),
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [1, 2, 3, 4, 5].asMap().entries.map((entry) {
+                return GestureDetector(
+                  onTap: () => controller.corouselC.animateToPage(entry.key),
+                  child: Container(
+                    width: 12.0,
+                    height: 12.0,
+                    margin:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: (Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(
+                                controller.current == entry.key ? 0.9 : 0.4)),
+                  ),
+                );
+              }).toList(),
             ),
           ),
-        ),
-      ),
+        ],
+      )),
     );
   }
 }
 
-class MyCustomClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path()
-      ..lineTo(0, size.height)
-      ..lineTo(size.width, size.height)
-      ..lineTo(size.width * 0.5, size.height * 0.5)
-      ..lineTo(size.width * 0.5, 0)
-      ..close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
-  }
-}
 
 // ignore: must_be_immutable
 
@@ -301,3 +317,74 @@ class MyCustomClipper extends CustomClipper<Path> {
 //           ),
 //         ),
 //       )),
+
+//clip
+// Center(
+//         child: ClipPath(
+//           clipper: MyCustomClipper(),
+//           child: Container(
+//             width: 300,
+//             height: 300,
+//             color: Colors.pink,
+//             child: FlutterLogo(
+//               size: 200,
+//             ),
+//           ),
+//         ),
+//       ),
+
+//backdrop filter
+// Center(
+//         child: Stack(children: [
+//           Container(
+//             width: 300,
+//             height: 300,
+//             color: Colors.pink,
+//             child: FlutterLogo(
+//               size: 200,
+//             ),
+//           ),
+//           BackdropFilter(
+//             filter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
+//             child: Container(),
+//           )
+//         ]),
+//       ),
+
+//custom painter
+// Center(
+//         child: Stack(children: [
+//           Container(
+//             width: 300,
+//             height: 300,
+//             color: Colors.grey[300],
+//             child: CustomPaint(
+//               painter: MyPainter(),
+//             ),
+//           ),
+//         ]),
+//       ),
+//     );
+//   }
+// }
+
+// class MyPainter extends CustomPainter {
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint mypaint = Paint()
+//       ..color = Colors.blue
+//       ..strokeWidth = 5;
+//     canvas.drawLine(Offset(0, 0), Offset(0, size.height), mypaint);
+//     canvas.drawLine(Offset(0, size.height),
+//         Offset(size.width * 0.5, size.height * 0.5), mypaint);
+//     canvas.drawLine(Offset(size.width * 0.5, size.height * 0.5),
+//         Offset(size.width, size.height), mypaint);
+//     canvas.drawLine(
+//         Offset(size.width, size.height), Offset(size.width, 0), mypaint);
+//   }
+
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) {
+//     return false;
+//   }
+// }
